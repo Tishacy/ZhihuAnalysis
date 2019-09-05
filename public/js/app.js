@@ -3,14 +3,16 @@ class WaterFall {
     constructor({ container, items, cols }) {
         this.container = container;
         this.items = [...items];
-        this.cols = cols;
         this.status = 0;
+        this.cols = cols;
+        this.colsType = (this.cols === -1)? 'auto' : 'fixed';
         this.organize();
-        window.onresize = () => {
+        window.addEventListener('resize', () => {
             this.organize();
-        };
+        }, false);
     }
     organize() {
+        this.cols = this._getCols();
         this.containerWidth = this.container.offsetWidth;
         this.itemWidth = this.containerWidth / this.cols;
         // this.cols = Math.floor(this.containerWidth / this.itemWidth);
@@ -56,13 +58,35 @@ class WaterFall {
         }
         return -1;
     }
+    _getCols() {
+        let cols = parseInt(this.cols);
+        if (this.colsType === 'fixed') {
+            // 固定列数
+            cols = (cols > 4)? 4 : cols;
+        } else if (this.colsType === 'auto') {
+            // 根据屏幕宽度自动设置列数
+            const viewWidth = window.innerWidth;
+            if (viewWidth <= 350) {
+                cols = 1
+            } else if (viewWidth > 350 && viewWidth <= 720) {
+                cols = 2
+            } else if (viewWidth > 720 && viewWidth <= 1090) {
+                cols = 3
+            } else {
+                cols = 4
+            }
+        } else {
+            console.error('Wrong cols type.');
+        }
+        return cols;
+    }
 }
 
 // 页面创建瀑布流
 const waterFall = new WaterFall({
     container: $("#waterfall-container")[0],
     items: $(".waterfall-item"),
-    cols: 3
+    cols: -1
 });
 let pagingIsEnd = false;
 let query = getQuery();
@@ -105,11 +129,7 @@ async function getBatch(query) {
     } else if (paging.is_end) {
         pagingIsEnd = true;
         console.log("This is the end");
-        $('footer').css({
-            'position': 'absolute',
-            'top': `${Math.max(...waterFall.heightArr)}px`,
-            'display': 'block'
-        })
+        organizeFooter();
     }
     imageInfos.forEach((imageInfo, index) => {
         const imageUrl = imageInfo.imageUrl;
@@ -168,6 +188,16 @@ function formatAPIUrl(route, query) {
     }
     return apiUrl.slice(0, -1);
 }
+function organizeFooter() {
+    const waterFallHeight = Math.max(...waterFall.heightArr);
+    const top = (waterFallHeight > 500)? waterFallHeight+20 : 500;
+    $('footer').css({
+        'position': 'absolute',
+        'top': top + `px`,
+        'display': 'block'
+    })
+}
+
 
 // 事件监听
 let key = true;
@@ -206,7 +236,6 @@ $('.main-container').delegate('.waterfall-item', 'mouseleave', function () {
     $(this).find('.info-container').stop().fadeOut(300);
 });
 
-
 let timer;
 $('.back-to-top').click(() => {
     timer = setInterval(() => {
@@ -221,3 +250,5 @@ $('.back-to-top').click(() => {
         }
     }, 1)
 })
+
+window.addEventListener('resize', organizeFooter, false);
