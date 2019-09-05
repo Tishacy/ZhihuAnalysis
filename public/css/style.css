@@ -158,7 +158,7 @@ div.main-container {
     width: 100%;
     height: 4rem;
     background-color: #fff;
-    position: fixed;
+    position: absolute;
     bottom: 0;
     display: none;
 }
