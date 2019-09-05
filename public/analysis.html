@@ -61,9 +61,11 @@
         async function getFirstBatch (query) {
             const json = await getBatch(query);
             const imageInfos = await json.data;
-            const minHeight = Math.min(waterFall.heightArr);
-            const maxHeight = Math.max(waterFall.heightArr);
-            // console.log(minHeight, maxHeight);
+            let minHeight = Math.min(...waterFall.heightArr);
+            let maxHeight = Math.max(...waterFall.heightArr);
+            minHeight = (minHeight == Infinity || minHeight == -Infinity)? 0 : minHeight;
+            maxHeight = (maxHeight == Infinity || maxHeight == -Infinity)? 0 : maxHeight;
+            // console.log(waterFall.heightArr, minHeight, maxHeight);
 
             // 如果图片数量太少，就增加 query.limit
             if (imageInfos.length < 10) {
