@@ -140,7 +140,7 @@ async function getBatch(query) {
         const $waterFallItem = $(`<div href="javascript:;" class="image-container waterfall-item">
                 <div class="image-wrapper">
                     <img src="" class="pic" alt="" data-src="${imageUrl}"/>
-                    <div class="info-container" style="">
+                    <div class="info-container">
                         <a href="https://www.zhihu.com/people/${authorUrlToken}/activities" target="_blank" class="avatar-wrapper">
                             <img class="avatar" src="${avatarUrl}" alt="" onerror="this.src='./static/avatar_template.jpg'">
                         </a>
@@ -229,12 +229,21 @@ async function loadNewBatch() {
     }
 }
 
+// 动态创建的元素需要事件委托绑定事件
 $('.main-container').delegate('.waterfall-item', 'mouseenter', function () {
     $(this).find('.info-container').stop().fadeIn(300);
 });
 $('.main-container').delegate('.waterfall-item', 'mouseleave', function () {
     $(this).find('.info-container').stop().fadeOut(300);
 });
+$('.main-container').delegate('.waterfall-item', 'click', function () {
+    const imageUrl = $(this).find('.image-wrapper img').attr('src');
+    $('.image-mask-wrapper .image-wrapper img').attr('src', imageUrl);
+    $('.image-mask-wrapper').stop().fadeIn(300);
+})
+$('.image-mask-wrapper .close-mask').click(function () {
+    $('.image-mask-wrapper').stop().fadeOut(300);
+})
 
 let timer;
 $('.back-to-top').click(() => {
