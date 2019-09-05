@@ -17,8 +17,8 @@
 		<div class="main">
 			<div class="title">Zhihu Analysis</div>
 			<div class="input-container">
-				<form class="input-box" action="/analysis.html?id=322745046">
-					<input type="text" name="id" class="question-input" placeholder="Copy question ID here." />
+				<form class="input-box" action="/analysis.html?">
+					<input type="text" name="id" class="question-input" placeholder="zhihu question url" />
                     <input type="submit" class="search-btn" value="">
                     <!-- <a href="#" class="search-btn"></a> -->
                 </form>
@@ -32,14 +32,22 @@
 
             $('form.input-box')[0].onsubmit = function () {
                 const $questionInput = $('.question-input')[0];
-                const questionId = $questionInput.value;
-                console.log(questionId);
-
+                const questionId = getQuestionId($questionInput.value);
                 if (checkQuestionId(questionId)) {
+                    $('.question-input')[0].value = questionId;
                     this.submit();
                 } else {
                     return false;
                 }
+            }
+            function getQuestionId (url) {
+                const arr = url.split('/');
+                for (let i=0; i<arr.length; i++) {
+                    if (arr[i] === 'question') {
+                        return arr[i+1];
+                    }
+                }
+                return false;
             }
             function checkQuestionId (id) {
                 id = String(id);

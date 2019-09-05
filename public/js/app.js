@@ -105,10 +105,6 @@ async function getFirstBatch (query) {
     maxHeight = (maxHeight == Infinity || maxHeight == -Infinity)? 0 : maxHeight;
     // console.log(waterFall.heightArr, minHeight, maxHeight);
 
-    // 如果图片数量太少，就增加 query.limit
-    if (imageInfos.length < 10) {
-        query.limit = 20;
-    }
     if (minHeight < 500 && !pagingIsEnd) {
         query.offset += query.limit;
         getFirstBatch(query);
@@ -133,6 +129,7 @@ async function getBatch(query) {
     }
     imageInfos.forEach((imageInfo, index) => {
         const imageUrl = imageInfo.imageUrl;
+        const answerId = imageInfo.answerId;
         const avatarUrl = imageInfo.author.avatar_url;
         const authorName = imageInfo.author.name;
         const authorUrlToken = imageInfo.author.url_token;
@@ -145,6 +142,7 @@ async function getBatch(query) {
                             <img class="avatar" src="${avatarUrl}" alt="" onerror="this.src='./static/avatar_template.jpg'">
                         </a>
                         <a href="https://www.zhihu.com/people/${authorUrlToken}/activities" target="_blank" class="author" title="${authorName}">${authorName}</a>
+                        <a href="https://www.zhihu.com/question/${question.id}/answer/${answerId}" target="_blank" class="answer">A</a>
                         <span class="voteup"><i></i>${voteupCount}</span>
                     </div>
                 </div>
@@ -162,13 +160,20 @@ async function getBatch(query) {
             });
             waterFall.appendItem($waterFallItem[0]);
             waterFall.organize();
+            if (pagingIsEnd) {
+                organizeFooter();
+            }
         });
         $waterFallImage.on('error', function () {
             // 加载失败时就隐藏该区块
             $(this).parents('.waterfall-item').css({
                 'display': 'none'
             })
-        })
+        });
+        // 如果图片数量太少，就下次增加 query.limit
+        if (imageInfos.length < 10) {
+            query.limit = 20;
+        }
     })
     return json;
 }
@@ -236,8 +241,8 @@ $('.main-container').delegate('.waterfall-item', 'mouseenter', function () {
 $('.main-container').delegate('.waterfall-item', 'mouseleave', function () {
     $(this).find('.info-container').stop().fadeOut(300);
 });
-$('.main-container').delegate('.waterfall-item', 'click', function () {
-    const imageUrl = $(this).find('.image-wrapper img').attr('src');
+$('.main-container').delegate('.waterfall-item .image-wrapper img', 'click', function () {
+    const imageUrl = $(this).attr('src');
     $('.image-mask-wrapper .image-wrapper img').attr('src', imageUrl);
     $('.image-mask-wrapper').stop().fadeIn(300);
 })
@@ -260,4 +265,8 @@ $('.back-to-top').click(() => {
     }, 1)
 })
 
-window.addEventListener('resize', organizeFooter, false);
+window.addEventListener('resize', function () {
+    if (pagingIsEnd) {
+        organizeFooter();
+    }
+}, false);

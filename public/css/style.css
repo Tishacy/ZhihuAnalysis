@@ -164,6 +164,7 @@ div.main-container {
 }
 .info-container .avatar-wrapper,
 .info-container .author,
+.info-container .answer,
 .info-container span.voteup {
     display: inline-block;
     height: 3.4rem;
@@ -200,9 +201,29 @@ div.main-container {
     text-decoration: underline;
 }
 
+/* aaaaaaaaaaaaaa */
+.info-container .answer {
+    display: block;
+    width: 1.8rem;
+    height: 1.8rem;
+    right: 1rem;
+    top: 50%;
+    margin-top: -1rem;
+    background-color: #333;
+    color: #fff;
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.8rem;
+    text-align: center;
+    border-radius: .3rem;
+}
+.info-container .answer:hover {
+    color: #ddd;
+}
+
 .info-container span.voteup {
     /* width: 4rem; */
-    right: 1rem;
+    right: 3.5rem;
     color: #333;
     font-weight: 300;
     font-size: 1.4rem;

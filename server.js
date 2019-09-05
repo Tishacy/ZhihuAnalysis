@@ -26,6 +26,7 @@ app.get("/api", async (request, response) => {
         const imageUrls = quest.extractImages(answer);
         imageUrls.forEach(imageUrl => {
             imageInfos.push({
+                answerId: answer.id,
                 author: answer.author,
                 imageUrl: imageUrl,
                 voteupCount: answer.voteup_count
