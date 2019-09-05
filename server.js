@@ -35,7 +35,7 @@ app.get("/api", async (request, response) => {
     offset += limit;
     
     responseJson = {
-        question: answers[0].question,
+        question: (paging.is_end)? [] : answers[0].question,
         data: imageInfos,
         paging: paging
     }
