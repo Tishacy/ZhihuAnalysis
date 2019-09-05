@@ -64,7 +64,7 @@ const waterFall = new WaterFall({
     items: $(".waterfall-item"),
     cols: 3
 });
-
+let pagingIsEnd = false;
 let query = getQuery();
 query.limit = 1;
 query.offset = 0;
@@ -85,7 +85,7 @@ async function getFirstBatch (query) {
     if (imageInfos.length < 10) {
         query.limit = 20;
     }
-    if (minHeight < 500 && !paging.is_end) {
+    if (minHeight < 500 && !pagingIsEnd) {
         query.offset += query.limit;
         getFirstBatch(query);
     }
@@ -103,6 +103,7 @@ async function getBatch(query) {
     if (paging.is_start) {
         $('h3.question').text(question.title);
     } else if (paging.is_end) {
+        pagingIsEnd = true;
         console.log("This is the end");
         $('footer').css({
             'position': 'absolute',
@@ -170,15 +171,22 @@ function formatAPIUrl(route, query) {
 
 // 事件监听
 let key = true;
-window.onscroll = async () => {
+window.addEventListener('scroll', headerToggle, false);
+window.addEventListener('scroll', loadNewBatch, false);
+
+function headerToggle() {
     // header的显示与隐藏
     if ($(window).scrollTop() > 100) {
-        $('header a').slideUp('fast');
+        $('header .logo-wrapper').slideUp('fast');
     } else {
-        $('header a').slideDown('fast')
+        $('header .logo-wrapper').slideDown('fast')
     }
-
+}
+async function loadNewBatch() {
     // 加载新批次数据
+    if (pagingIsEnd) {
+        window.removeEventListener('scroll', loadNewBatch);
+    }
     const pageHeight = document.body.scrollHeight;
     const scrollHeight = window.scrollY + 572;
     if (scrollHeight >= 0.8 * pageHeight && key) {
