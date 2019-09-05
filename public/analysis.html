@@ -2,7 +2,7 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="viewport" content="width=device-width, initial-scale=0.8" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<title>Zhihu Analysis</title>
         <link rel="stylesheet" href="./css/style.css" />
@@ -69,7 +69,7 @@
 
             // 如果图片数量太少，就增加 query.limit
             if (imageInfos.length < 10) {
-                query.limit = 10;
+                query.limit = 15;
             }
             if (minHeight < 500) {
                 query.offset += query.limit;
@@ -160,8 +160,8 @@
             const scrollHeight = window.scrollY + 572;
             if (scrollHeight >= 0.8 * pageHeight && key) {
                 key = false;
-                const batchData = await getBatch(query);
                 query.offset += query.limit;
+                const batchData = await getBatch(query);
                 if (batchData) {
                     key = true;
                 }
