@@ -1,0 +1,23 @@
+{
+  "name": "zhihu",
+  "version": "1.0.0",
+  "description": "Analysis of Zhihu questions.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "zhihu",
+    "questions",
+    "images",
+    "analysis"
+  ],
+  "author": "Tishacy",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "jsdom": "^15.1.1",
+    "node-fetch": "^2.6.0"
+  }
+}

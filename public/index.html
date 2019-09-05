@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<title>Zhihu Analysis</title>
+        <link rel="stylesheet" href="./css/style.css" />
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	</head>
+	<body>
+		<header>
+			<a href="/">Zhihu Analysis</a>
+		</header>
+		<div class="main">
+			<div class="title">Zhihu Analysis</div>
+			<div class="input-container">
+				<form class="input-box" action="/analysis.html?id=322745046">
+					<input type="text" name="id" class="question-input" placeholder="Copy question ID here." />
+                    <input type="submit" class="search-btn" value="">
+                    <!-- <a href="#" class="search-btn"></a> -->
+                </form>
+			</div>
+		</div>
+		<footer>
+			<p>-- Tishacy --</p>
+		</footer>
+
+        <script src="./js/app.js"></script>
+        <script>
+
+            $('form.input-box')[0].onsubmit = function () {
+                const $questionInput = $('.question-input')[0];
+                const questionId = $questionInput.value;
+                console.log(questionId);
+
+                if (checkQuestionId(questionId)) {
+                    this.submit();
+                } else {
+                    return false;
+                }
+            }
+            function checkQuestionId (id) {
+                id = String(id);
+                return (!!Number(id));
+            }
+        </script>
+	</body>
+</html>
