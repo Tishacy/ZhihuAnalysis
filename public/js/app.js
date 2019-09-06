@@ -207,6 +207,7 @@ function organizeFooter() {
 // 事件监听
 let key = true;
 window.addEventListener('scroll', headerToggle, false);
+window.addEventListener('scroll', sideToggle, false);
 window.addEventListener('scroll', loadNewBatch, false);
 
 function headerToggle() {
@@ -217,6 +218,19 @@ function headerToggle() {
         $('header .logo-wrapper').slideDown('fast')
     }
 }
+function sideToggle() {
+    // 侧边按钮的显示与隐藏
+    if ($(window).scrollTop() > 1000) {
+        $('.side').stop().animate({
+            'bottom': '2rem',
+        }, 10, 'linear');
+    } else {
+        $('.side').stop().animate({
+            'bottom': '-4rem',
+        }, 10, 'linear');
+    }
+}
+
 async function loadNewBatch() {
     // 加载新批次数据
     if (pagingIsEnd) {
@@ -248,6 +262,10 @@ $('.main-container').delegate('.waterfall-item .image-wrapper img', 'click', fun
 })
 $('.image-mask-wrapper .close-mask').click(function () {
     $('.image-mask-wrapper').stop().fadeOut(300);
+    $('.image-mask-wrapper .image-wrapper img').attr('src', '').removeClass('full');
+})
+$('.image-mask-wrapper .image-wrapper img').click(function () {
+    $(this).toggleClass('full');
 })
 
 let timer;

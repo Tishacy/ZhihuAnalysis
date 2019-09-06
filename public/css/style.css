@@ -13,6 +13,7 @@ body {
 		"Helvetica Neue", Arial, sans-serif, "Apple Color Emoji",
         "Segoe UI Emoji", "Segoe UI Symbol";
     position: relative;
+    background-color: #f6f6f6;
 }
 
 header {
@@ -133,7 +134,7 @@ div.main-container {
     /* width: 25%; */
     /* min-width: 20rem; */
     padding: 1rem;
-    background-color: #fff;
+    background-color: #f6f6f6;
     box-sizing: border-box;
 }
 .image-wrapper {
@@ -200,8 +201,6 @@ div.main-container {
 .info-container .author:hover {
     text-decoration: underline;
 }
-
-/* aaaaaaaaaaaaaa */
 .info-container .answer {
     display: block;
     width: 1.8rem;
@@ -299,12 +298,22 @@ footer p {
 }
 .image-mask-wrapper .image-wrapper {
     width: 80%;
-    max-height: 90%;
+    height: 90%;
+    overflow-x: scroll;
     overflow-y: scroll;
     position: relative;
 }
 .image-mask-wrapper .image-wrapper img {
+    width: auto;
+    height: 100%;
+    margin: 0 auto;
+    border-radius: .5rem;
+    cursor: zoom-in;
+}
+.image-mask-wrapper .image-wrapper img.full {
     width: 100%;
+    height: auto;
+    cursor: zoom-out;
 }
 .image-mask-wrapper .close-mask {
     position: fixed;
