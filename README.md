@@ -1,6 +1,6 @@
 # 知乎看图模式
 
-<img src="./demo.png" width="400px" alt="示例图片" style="display:block; margin: 0 auto;"/>
+<img src="./demo.jpg" width="400px" alt="示例图片" style="display:block; margin: 0 auto;"/>
 
 - 网址：[https://zhihu-analysis.herokuapp.com/](https://zhihu-analysis.herokuapp.com/)
 - 复制知乎问题的链接地址，点击搜索，即可看该问题下的图片。
