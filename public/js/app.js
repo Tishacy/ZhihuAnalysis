@@ -113,7 +113,7 @@ async function getFirstBatch (query) {
 
 async function getBatch(query) {
     console.log(`getting batch: ${query.offset}`);
-    const apiUrl = formatAPIUrl('/api', query);
+    const apiUrl = formatAPIUrl('/batch', query);
     const res = await fetch(apiUrl);
     const json = await res.json();
     const question = json.question;
@@ -137,13 +137,13 @@ async function getBatch(query) {
         const $waterFallItem = $(`<div href="javascript:;" class="image-container waterfall-item">
                 <div class="image-wrapper">
                     <img src="" class="pic" alt="" data-src="${imageUrl}"/>
-                    <div class="info-container">
+                    <div class="info-container" url-token="${authorUrlToken}">
                         <a href="https://www.zhihu.com/people/${authorUrlToken}/activities" target="_blank" class="avatar-wrapper">
                             <img class="avatar" src="${avatarUrl}" alt="" onerror="this.src='./static/avatar_template.jpg'">
                         </a>
-                        <a href="https://www.zhihu.com/people/${authorUrlToken}/activities" target="_blank" class="author" title="${authorName}">${authorName}</a>
-                        <a href="https://www.zhihu.com/question/${question.id}/answer/${answerId}" target="_blank" class="answer">A</a>
-                        <span class="voteup"><i></i>${voteupCount}</span>
+                        <a href="https://www.zhihu.com/people/${authorUrlToken}" target="_blank" class="author" title="${authorName}">${authorName}</a>
+                        <a href="https://www.zhihu.com/question/${question.id}/answer/${answerId}" target="_blank" title="原回答" class="answer">A</a>
+                        <span class="voteup" title="赞同数"><i></i>${voteupCount}</span>
                     </div>
                 </div>
         </div>`)
@@ -248,6 +248,56 @@ async function loadNewBatch() {
     }
 }
 
+let memberTrigger = '.info-container';
+async function showMemberWindow(e) {
+    memberTrigger = this;
+    const event = window.event || e;
+    const { pageX, pageY } = event;
+    const $memberWindow = $('.member-window');
+    const urlToken = $(this).parents('.info-container').attr('url-token');
+    const memberAPI = `/member?url_token=${urlToken}`;
+    const res = await fetch(memberAPI);
+    const memberJson = await res.json();
+    // console.log(event);
+
+    if (!memberJson.error) {
+        const textJson = {
+            '.member-name': memberJson.name,
+            '.member-headline': memberJson.headline,
+            '.answers-num': memberJson.answer_count,
+            '.articles-num': memberJson.articles_count,
+            '.followers-num': memberJson.follower_count
+        }
+        for (let key in textJson) {
+            $memberWindow.find(key).text(textJson[key]);
+        }
+        $memberWindow.find('.member-avatar').attr('src', memberJson.avatar_url);
+        $memberWindow.find('.member-name').attr('href', memberJson.url);
+        $memberWindow.find('.member-answers').attr('href', `https://www.zhihu.com/people/${urlToken}/answers`);
+        $memberWindow.find('.member-articles').attr('href', `https://www.zhihu.com/people/${urlToken}/posts`);
+        $memberWindow.find('.member-followers').attr('href', `https://www.zhihu.com/people/${urlToken}/followers`);
+
+        $memberWindow.css({
+            'top': pageY - 150 + 'px',
+            'left': pageX + 'px'
+        });
+        $memberWindow.fadeIn(300);
+    } else {
+        console.log('匿名用户');
+    }
+}
+function hideMemberWindow() {
+    $('.member-window').fadeOut(300);
+}
+function mouseInDom(selector, pos) {
+    const $dom = $(selector);
+    const y1 = $dom.offset().top;
+    const y2 = y1 + $dom.height();
+    const x1 = $dom.offset().left;
+    const x2 = x1 + $dom.width();
+    return !(pos.x < x1 || pos.x > x2 || pos.y < y1 || pos.y > y2);
+}
+
 // 动态创建的元素需要事件委托绑定事件
 $('.main-container').delegate('.waterfall-item', 'mouseenter', function () {
     $(this).find('.info-container').stop().fadeIn(300);
@@ -255,6 +305,20 @@ $('.main-container').delegate('.waterfall-item', 'mouseenter', function () {
 $('.main-container').delegate('.waterfall-item', 'mouseleave', function () {
     $(this).find('.info-container').stop().fadeOut(300);
 });
+$('.main-container').delegate('.waterfall-item .info-container .avatar', 'mouseenter', showMemberWindow);
+$('.main-container').delegate('.waterfall-item .info-container .author', 'mouseenter', showMemberWindow);
+$(document).mousemove(function(e) {
+    const mousePos = {
+        x: e.pageX,
+        y: e.pageY
+    };
+    const mouseInMemberWindow = mouseInDom('.member-window', mousePos);
+    const mouseInTrigger = mouseInDom(memberTrigger, mousePos);
+    if (!mouseInMemberWindow && !mouseInTrigger) {
+        hideMemberWindow();
+    }
+})
+
 $('.main-container').delegate('.waterfall-item .image-wrapper img', 'click', function () {
     const imageUrl = $(this).attr('src');
     $('.image-mask-wrapper .image-wrapper img').attr('src', imageUrl);

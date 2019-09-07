@@ -1,4 +1,5 @@
 const express = require('express');
+const fetch = require('node-fetch');
 const zhihu = require('./utils');
 require('dotenv').config();
 
@@ -9,7 +10,8 @@ app.listen(port, '0.0.0.0', () => console.log('Listen at 3000'));
 app.use(express.static('public'));
 app.use(express.json());
 
-app.get("/api", async (request, response) => {
+// 获取批次图片信息
+app.get("/batch", async (request, response) => {
     const query = request.query;
     let { id, limit, offset } = query;
     const quest = new zhihu.Question(id);
@@ -42,7 +44,29 @@ app.get("/api", async (request, response) => {
     }
     response.json(responseJson);
 })
+// '127.0.0.1:3000/batch?id=299205851'
 
+// 获取回答用户信息
+app.get('/member', async (request, response) => {
+    const { url_token } = request.query;
+    const errorJson = {
+        'error': 404,
+        'errorMsg': 'Member not found.'
+    };
+    if (url_token) {
+        const memberAPI = `https://www.zhihu.com/api/v4/members/${url_token}?include=allow_message%2Cis_followed%2Cis_following%2Cis_org%2Cis_blocking%2Cemployments%2Canswer_count%2Cfollower_count%2Carticles_count%2Cgender%2Cbadge%5B%3F(type%3Dbest_answerer)%5D.topics`;
+        const res = await fetch(memberAPI);
+        if (res.status === 200) {
+            const memberJson = await res.json();
+            response.json(memberJson);
+        } else {
+            response.json(errorJson);
+        }
+    } else {
+        response.json(errorJson);
+    }
+})
+// '127.0.0.1:3000/member?url_token=qwertyuiop-34-47'
 
 // (async () => {
 //     const quest = new zhihu.Question(id=270011746);    

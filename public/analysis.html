@@ -4,7 +4,7 @@
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=0.8" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<title>Zhihu Analysis</title>
+        <title>Zhihu Analysis</title>
         <link rel="stylesheet" href="./css/style.css" />
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
         <!-- <script src="js/jquery.scrollUp.min.js"></script> -->
@@ -44,9 +44,34 @@
         </footer>
         <div class="image-mask-wrapper" style="display: none;">
             <div class="image-wrapper">
-                <img src="" class="pic" alt=""/>
+                <img src="" class="pic" alt="" />
             </div>
             <div class="close-mask">×</div>
+        </div>
+        <div class="member-window" style="display: none;">
+            <div class="member-window-header">
+                <div class="member-avatar-wrapper">
+                    <img src="./static/avatar_template.jpg" alt="" class="member-avatar" onerror="this.src='./static/avatar_template.jpg'">
+                </div>
+                <div class="member-info">
+                    <a href="javascript:;" target="_blank" class="member-name"></a>
+                    <p class="member-headline"></p>    
+                </div>
+            </div>
+            <div class="member-window-bottom">
+                <a href="javascript:;" target="_blank" class="member-answers content-item">
+                    <span class="item-title">回答</span>
+                    <span class="answers-num item-content">0</span>
+                </a>
+                <a href="javascript:;" target="_blank" class="member-articles content-item">
+                    <span class="item-title">文章</span>
+                    <span class="articles-num item-content">0</span>
+                </a>
+                <a href="javascript:;" target="_blank" class="member-followers content-item">
+                    <span class="item-title">关注者</span>
+                    <span class="followers-num item-content">0</span>
+                </a>
+            </div>
         </div>
 
         <script src="js/app.js" style="z-index: 1000"></script>
