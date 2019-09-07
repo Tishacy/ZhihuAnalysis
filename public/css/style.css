@@ -332,3 +332,78 @@ footer p {
 .image-mask-wrapper .close-mask:hover {
     background-color: rgba(255,255,255,0.2);
 }
+
+.member-window {
+    width: 30.6rem;
+    position: absolute;
+    border-radius: .5rem;
+    box-shadow: 0 0 4px #ccc;
+    background-color: #fff;
+    z-index: 5;
+}
+.member-window-header {
+    position: relative;
+    width: 100%;
+    height: 10rem;
+    border-bottom: 1px solid #eee;
+    overflow: hidden;
+}
+.member-window-header .member-avatar-wrapper {
+    position: absolute;
+    width: 7rem;
+    height: 7rem;
+    margin: 1.5rem;
+}
+.member-window-header .member-avatar-wrapper img.member-avatar {
+    width: 100%;
+    height: auto;
+}
+.member-window-header .member-info {
+    height: 8rem;
+    position: absolute;
+    margin-left: 10rem;
+    margin-right: 1.5rem;
+    padding: 1rem 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.member-info a.member-name {
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 4.0rem;
+    color: #000;
+}
+.member-info .member-headline {
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 1.6rem;
+    color: #333;
+}
+
+.member-window-bottom {
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+.member-window-bottom .content-item:hover .item-title,
+.member-window-bottom .content-item:hover .item-content {
+    color: #175199;
+}
+.member-window-bottom .content-item .item-title {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: 400;
+    line-height: 2rem;
+    color: #646464;
+    text-align: center;
+}
+.member-window-bottom .content-item .item-content {
+    display: block;
+    font-size: 1.6rem;
+    font-weight: 500;
+    line-height: 3rem;
+    color: #000;
+    text-align: center;
+}

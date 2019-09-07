@@ -40,8 +40,11 @@
                     return false;
                 }
             }
-            function getQuestionId (url) {
-                const arr = url.split('/');
+            function getQuestionId (val) {
+                if (!isNaN(val)) {
+                    return val;
+                }
+                const arr = val.split('/');
                 for (let i=0; i<arr.length; i++) {
                     if (arr[i] === 'question') {
                         return arr[i+1];
