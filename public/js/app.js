@@ -253,6 +253,15 @@ async function showMemberWindow(e) {
     const event = window.event || e;
     const { pageX, pageY } = event;
     const $memberWindow = $('.member-window');
+    
+    // show member window
+    showLoading();
+    $memberWindow.css({
+        'top': pageY - 150 + 'px',
+        'left': pageX + 'px'
+    });
+    $memberWindow.stop().fadeIn(300);
+
     const urlToken = $(this).parents('.info-container').attr('url-token');
     const memberAPI = `/member?url_token=${urlToken}`;
     const res = await fetch(memberAPI);
@@ -260,14 +269,6 @@ async function showMemberWindow(e) {
     memberTrigger = this;
 
     if (!memberJson.error) {
-        // show member window
-        showLoading();
-        $memberWindow.css({
-            'top': pageY - 150 + 'px',
-            'left': pageX + 'px'
-        });
-        $memberWindow.stop().fadeIn(300);
-        
         const textJson = {
             '.member-name': memberJson.name,
             '.member-headline': memberJson.headline,
@@ -287,6 +288,7 @@ async function showMemberWindow(e) {
         hideLoading();
     } else {
         console.log('匿名用户');
+        $memberWindow.stop().fadeOut(300);
     }
 }
 function showLoading() {
