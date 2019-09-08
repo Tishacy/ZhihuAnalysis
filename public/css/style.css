@@ -341,6 +341,44 @@ footer p {
     background-color: #fff;
     z-index: 5;
 }
+.member-window .loading {
+    width: 15rem;
+    height: 10rem;
+    position: absolute;
+    border-radius: .5rem;
+    box-shadow: 0 0 1px #ccc;
+    background-color: #fff;
+    z-index: 6;
+}
+.loading .loading-inner {
+    width: 40%;
+    height: 2rem;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -20%;
+    margin-top: -1rem;
+}
+.loading span {
+    display: block;
+    float: left;
+    width: 25%;
+    height: 100%;
+    box-sizing: border-box;
+    position: relative;
+}
+.loading span i {
+    width: .6rem;
+    height: .6rem;
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    margin-left: -.25rem;
+    border-radius: 50%;
+    background-color: #1973e9;
+}
+
+
 .member-window-header {
     position: relative;
     width: 100%;
