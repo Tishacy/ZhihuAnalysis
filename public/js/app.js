@@ -250,17 +250,24 @@ async function loadNewBatch() {
 
 let memberTrigger = '.info-container';
 async function showMemberWindow(e) {
-    memberTrigger = this;
     const event = window.event || e;
     const { pageX, pageY } = event;
     const $memberWindow = $('.member-window');
     const urlToken = $(this).parents('.info-container').attr('url-token');
     const memberAPI = `/member?url_token=${urlToken}`;
     const res = await fetch(memberAPI);
-    const memberJson = await res.json();
-    // console.log(event);
+    const memberJson = await res.json();    
+    memberTrigger = this;
 
     if (!memberJson.error) {
+        // show member window
+        showLoading();
+        $memberWindow.css({
+            'top': pageY - 150 + 'px',
+            'left': pageX + 'px'
+        });
+        $memberWindow.stop().fadeIn(300);
+        
         const textJson = {
             '.member-name': memberJson.name,
             '.member-headline': memberJson.headline,
@@ -277,17 +284,36 @@ async function showMemberWindow(e) {
         $memberWindow.find('.member-articles').attr('href', `https://www.zhihu.com/people/${urlToken}/posts`);
         $memberWindow.find('.member-followers').attr('href', `https://www.zhihu.com/people/${urlToken}/followers`);
 
-        $memberWindow.css({
-            'top': pageY - 150 + 'px',
-            'left': pageX + 'px'
-        });
-        $memberWindow.fadeIn(300);
+        hideLoading();
     } else {
         console.log('匿名用户');
     }
 }
+function showLoading() {
+    $('.loading').stop().show();
+    loadingAnimation();
+    $('.member-window-header').stop().hide();
+    $('.member-window-bottom').stop().hide();
+}
+function hideLoading() {
+    $('.loading').stop().hide();
+    $('.member-window-header').stop().show();
+    $('.member-window-bottom').stop().show();
+}
+
+function loadingAnimation() {
+    const $is = $('.loading-inner span i');
+    for (let i=0; i<$is.length; i++) {
+        const $i = $($is[i]);
+        $i.delay(125*i);
+        setInterval(function () {
+            $i.animate({'top': 0,}, 500)
+              .animate({'top': '1.5rem'}, 500)
+        })
+    }
+}
 function hideMemberWindow() {
-    $('.member-window').fadeOut(300);
+    $('.member-window').stop().fadeOut(300);
 }
 function mouseInDom(selector, pos) {
     const $dom = $(selector);
@@ -312,9 +338,10 @@ $(document).mousemove(function(e) {
         x: e.pageX,
         y: e.pageY
     };
+    const mouseInLoading = mouseInDom('.loading', mousePos);
     const mouseInMemberWindow = mouseInDom('.member-window', mousePos);
     const mouseInTrigger = mouseInDom(memberTrigger, mousePos);
-    if (!mouseInMemberWindow && !mouseInTrigger) {
+    if (!mouseInLoading && !mouseInMemberWindow && !mouseInTrigger) {
         hideMemberWindow();
     }
 })
