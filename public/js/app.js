@@ -258,15 +258,18 @@ async function showMemberWindow(e) {
     showLoading();
     $memberWindow.css({
         'top': pageY - 150 + 'px',
-        'left': pageX + 'px'
+        'left': pageX + 'px',
+        // 'display': 'block',
+        'visibility': 'visible',
+        'transition': '.3s ease'
     });
-    $memberWindow.stop().fadeIn(300);
+    console.log('member-window shows.');
 
     const urlToken = $(this).parents('.info-container').attr('url-token');
     const memberAPI = `/member?url_token=${urlToken}`;
     const res = await fetch(memberAPI);
     const memberJson = await res.json();    
-    memberTrigger = this;
+    memberTrigger = $(this).parents('.image-wrapper')[0];
 
     if (!memberJson.error) {
         const textJson = {
@@ -288,34 +291,38 @@ async function showMemberWindow(e) {
         hideLoading();
     } else {
         console.log('匿名用户');
-        $memberWindow.stop().fadeOut(300);
+        $memberWindow.css({'display': 'none'});
     }
 }
 function showLoading() {
-    $('.loading').stop().show();
-    loadingAnimation();
-    $('.member-window-header').stop().hide();
-    $('.member-window-bottom').stop().hide();
+    $('.loading').css({'display': 'block'});
+    // loadingAnimation();
+    $('.member-window-header').css({'display': 'none'});
+    $('.member-window-bottom').css({'display': 'none'});
 }
 function hideLoading() {
-    $('.loading').stop().hide();
-    $('.member-window-header').stop().show();
-    $('.member-window-bottom').stop().show();
+    $('.loading').css({'display': 'none'});
+    $('.member-window-header').css({'display': 'block'});
+    $('.member-window-bottom').css({'display': 'flex'});
 }
-
+let loadingAnimationTimer;
 function loadingAnimation() {
     const $is = $('.loading-inner span i');
     for (let i=0; i<$is.length; i++) {
         const $i = $($is[i]);
         $i.delay(125*i);
-        setInterval(function () {
-            $i.animate({'top': 0,}, 500)
-              .animate({'top': '1.5rem'}, 500)
+        clearInterval(loadingAnimationTimer);
+        loadingAnimationTimer = setInterval(function () {
+            $i.animate({'top': 0,}, 'ease')
+              .animate({'top': '1.5rem'}, 'ease')
         })
     }
 }
 function hideMemberWindow() {
-    $('.member-window').stop().fadeOut(300);
+    $('.member-window').css({
+        // 'display': 'none',
+        'visibility': 'hidden'
+    });
 }
 function mouseInDom(selector, pos) {
     const $dom = $(selector);
@@ -336,14 +343,15 @@ $('.main-container').delegate('.waterfall-item', 'mouseleave', function () {
 $('.main-container').delegate('.waterfall-item .info-container .avatar', 'mouseenter', showMemberWindow);
 $('.main-container').delegate('.waterfall-item .info-container .author', 'mouseenter', showMemberWindow);
 $(document).mousemove(function(e) {
+    e = window.event || e;
     const mousePos = {
         x: e.pageX,
         y: e.pageY
     };
-    const mouseInLoading = mouseInDom('.loading', mousePos);
+    // const mouseInLoading = mouseInDom('.loading', mousePos);
     const mouseInMemberWindow = mouseInDom('.member-window', mousePos);
     const mouseInTrigger = mouseInDom(memberTrigger, mousePos);
-    if (!mouseInLoading && !mouseInMemberWindow && !mouseInTrigger) {
+    if (!mouseInMemberWindow && !mouseInTrigger) {
         hideMemberWindow();
     }
 })
