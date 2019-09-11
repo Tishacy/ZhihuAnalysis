@@ -30,6 +30,7 @@ header .logo-wrapper {
     width: 100%;
     height: 5.6rem;
     background-color: #1864c9;
+    position: relative;
 }
 .logo-wrapper a {
     color: #fff;
@@ -64,7 +65,7 @@ div.main .input-container {
     width: 98%;
     height: 100%;
     padding: 1rem;
-    padding-right: 0;
+    padding-right: 5rem;
     color: rgba(0,0,0,0.5);
     font-size: 1.6rem;
     font-weight: 300;
@@ -82,7 +83,7 @@ div.main .input-container {
     height: 3rem;
     position: absolute;
     top: 50%;
-    right: 1rem;
+    right: -4rem;
     margin-top: -1.5rem;
     color: #fff;
     border: none;
@@ -447,4 +448,28 @@ footer p {
     line-height: 3rem;
     color: #000;
     text-align: center;
+}
+
+.logo-wrapper .input-container {
+    height: 100%;
+    width: 20rem;
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 0rem auto;
+}
+.logo-wrapper .input-container .input-box {
+    margin: 1.5rem auto;
+    width: 6rem;
+    border-radius: 1rem;
+}
+.logo-wrapper .input-container .input-box .question-input {
+    float: right;
+    height: 1rem;
+    border-radius: 2rem;
+}
+.logo-wrapper .input-container .input-box .search-btn {
+    float: right;
+    right: .3rem;
+    margin-top: 0rem;
 }

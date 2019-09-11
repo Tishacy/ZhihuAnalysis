@@ -13,6 +13,13 @@
 		<header class="analysis-header">
             <div class="logo-wrapper">
                 <a href="/">Zhihu Analysis</a>
+                <div class="input-container">
+                    <form class="input-box" action="/analysis.html?">
+                        <input type="text" name="id" class="question-input" placeholder="" />
+                        <input type="submit" class="search-btn" value="">
+                        <!-- <a href="#" class="search-btn"></a> -->
+                    </form>
+                </div>
             </div>
 			<div class="question-container">
 				<h3 class="question"></h3>
@@ -83,5 +90,43 @@
         </div>
 
         <script src="js/app.js" style="z-index: 1000"></script>
+        <script>
+            $('form.input-box')[0].onsubmit = function () {
+                const $questionInput = $('.question-input')[0];
+                const questionId = getQuestionId($questionInput.value);
+                if (checkQuestionId(questionId)) {
+                    $('.question-input')[0].value = questionId;
+                    this.submit();
+                } else {
+                    return false;
+                }
+            }
+            function getQuestionId (val) {
+                if (!isNaN(val)) {
+                    return val;
+                }
+                const arr = val.split('/');
+                for (let i=0; i<arr.length; i++) {
+                    if (arr[i] === 'question') {
+                        return arr[i+1];
+                    }
+                }
+                return false;
+            }
+            function checkQuestionId (id) {
+                id = String(id);
+                return (!!Number(id));
+            }
+            $('.question-input').on('focus', function () {
+                $(this).animate({
+                    'width': '30rem',
+                }, 'fast')
+            })
+            $('.question-input').on('blur', function () {
+                $(this).animate({
+                    'width': '6rem',
+                }, 'fast')
+            })
+        </script>
     </body>
 </html>
