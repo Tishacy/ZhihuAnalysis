@@ -303,6 +303,9 @@ footer p {
     overflow-y: scroll;
     position: relative;
 }
+.image-mask-wrapper .image-wrapper::-webkit-scrollbar {
+    display: none;
+}
 .image-mask-wrapper .image-wrapper img {
     width: auto;
     height: 100%;
