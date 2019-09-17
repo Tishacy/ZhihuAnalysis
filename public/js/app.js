@@ -88,9 +88,10 @@ const waterFall = new WaterFall({
     items: $(".waterfall-item"),
     cols: -1
 });
+let poolIsEmpty = false;
 let pagingIsEnd = false;
 let query = getQuery();
-query.limit = 1;
+query.limit = 20;
 query.offset = 0;
 getFirstBatch(query);
 
@@ -105,8 +106,9 @@ async function getFirstBatch (query) {
     maxHeight = (maxHeight == Infinity || maxHeight == -Infinity)? 0 : maxHeight;
     // console.log(waterFall.heightArr, minHeight, maxHeight);
 
-    if (minHeight < 500 && !pagingIsEnd) {
+    if (minHeight < 500 && !poolIsEmpty) {
         query.offset += query.limit;
+        console.log(query.offset);
         getFirstBatch(query);
     }
 }
@@ -119,12 +121,12 @@ async function getBatch(query) {
     const question = json.question;
     const imageInfos = json.data;
     const paging = json.paging;
+    const pool_is_empty = json.pool_is_empty;
 
-    if (paging.is_start) {
-        $('h3.question').text(question.title);
-    } else if (paging.is_end) {
-        pagingIsEnd = true;
-        console.log("This is the end");
+    $('h3.question').text(question.title);
+    if (pool_is_empty) {
+        poolIsEmpty = true;
+        console.log("The image pool is empty.");
         organizeFooter();
     }
     imageInfos.forEach((imageInfo, index) => {
@@ -149,18 +151,18 @@ async function getBatch(query) {
         </div>`)
         const $waterFallImage = $waterFallItem.find('img.pic');
         $waterFallItem.css({
-            'visibility': 'hidden'
+            'opacity': 0
         });
 
         $('#waterfall-container').append($waterFallItem);
         $waterFallImage.attr('src', $waterFallImage.attr('data-src'));
         $waterFallImage.on('load', function () {
-            $waterFallItem.css({
-                'visibility': 'visible'
-            });
+            $waterFallItem.animate({
+                'opacity': 1
+            }, 300);
             waterFall.appendItem($waterFallItem[0]);
             waterFall.organize();
-            if (pagingIsEnd) {
+            if (poolIsEmpty) {
                 organizeFooter();
             }
         });
@@ -233,7 +235,7 @@ function sideToggle() {
 
 async function loadNewBatch() {
     // 加载新批次数据
-    if (pagingIsEnd) {
+    if (poolIsEmpty) {
         window.removeEventListener('scroll', loadNewBatch);
     }
     const pageHeight = document.body.scrollHeight;
@@ -385,7 +387,7 @@ $('.back-to-top').click(() => {
 })
 
 window.addEventListener('resize', function () {
-    if (pagingIsEnd) {
+    if (poolIsEmpty) {
         organizeFooter();
     }
 }, false);

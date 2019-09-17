@@ -56,9 +56,30 @@ class Question {
         });
         return answer.imageUrls;
     }
-    
-
 }
+
+class ImagePool {
+    constructor() {
+        this.pool = [],
+        this.minSize = 20,
+        this.size = this.pool.length
+    }
+    inPool(imageJson) {
+        this.pool.push(imageJson);
+        this.size ++;
+        return this
+    }
+    outPool() {
+        this.size --;
+        return this.pool.splice(0, 1);
+    }
+    isEmpty() {
+        return (this.pool.length === 0);
+    }
+}
+
+
 module.exports = {
-    Question
+    Question,
+    ImagePool
 }
