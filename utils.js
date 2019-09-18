@@ -61,7 +61,7 @@ class Question {
 class ImagePool {
     constructor() {
         this.pool = [],
-        this.minSize = 20,
+        this.minSize = 30,
         this.size = this.pool.length
     }
     inPool(imageJson) {

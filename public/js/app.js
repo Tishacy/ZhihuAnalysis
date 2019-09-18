@@ -121,7 +121,6 @@ async function getFirstBatch(query) {
     // console.log(waterFall.heightArr, minHeight, maxHeight);
 
     if (minHeight < 500 && !poolIsEmpty) {
-        // query.offset += query.limit;
         query.offset = currentOffset + query.limit;
         console.log(query.offset);
         getFirstBatch(query);
@@ -138,7 +137,6 @@ async function getBatch(query) {
     const paging = json.paging;
     const pool_is_empty = json.pool_is_empty;
     currentOffset = json.offset;
-    console.log('current offset', currentOffset);
 
     if (pool_is_empty) {
         poolIsEmpty = true;
@@ -263,8 +261,6 @@ async function loadNewBatch() {
     const scrollHeight = window.scrollY + 572;
     if (scrollHeight >= 0.8 * pageHeight && key) {
         key = false;
-        // query.offset += query.limit;
-        // console.log('currentOffset', currentOffset);
         query.offset = currentOffset + query.limit;
         const batchData = await getBatch(query);
         if (batchData) {
@@ -386,7 +382,13 @@ $(document).mousemove(function(e) {
 
 $('.main-container').delegate('.waterfall-item .image-wrapper>img', 'click', function () {
     const imageUrl = $(this).attr('src');
-    $('.image-mask-wrapper .image-wrapper>img').attr('src', imageUrl);
+    const image = $('.image-mask-wrapper .image-wrapper img');
+    image.attr('src', imageUrl);
+    if (image[0].width >= image[0].height) {
+        image.removeClass('full-height').addClass('full-width');
+    } else {
+        image.removeClass('full-width').addClass('full-height');
+    }
     $('.image-mask-wrapper').stop().fadeIn(300);
 })
 $('.image-mask-wrapper .close-mask').click(function () {
@@ -394,7 +396,11 @@ $('.image-mask-wrapper .close-mask').click(function () {
     $('.image-mask-wrapper .image-wrapper img').attr('src', '').removeClass('full');
 })
 $('.image-mask-wrapper .image-wrapper>img').click(function () {
-    $(this).toggleClass('full');
+    if ($(this).hasClass('full-width')) {
+        $(this).removeClass('full-width').addClass('full-height');
+    } else {
+        $(this).removeClass('full-height').addClass('full-width');
+    }
 })
 
 let timer;
