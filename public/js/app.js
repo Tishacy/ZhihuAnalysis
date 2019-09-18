@@ -93,10 +93,18 @@ let pagingIsEnd = false;
 let query = getQuery();
 query.limit = 20;
 query.offset = 0;
+getQuestion(query);
 getFirstBatch(query);
 
 // Functions
-async function getFirstBatch (query) {
+async function getQuestion(query) {
+    const apiUrl = formatAPIUrl('/question', query);
+    const res = await fetch(apiUrl);
+    const question = await res.json();
+    $('h3.question').text(question.title);
+}
+
+async function getFirstBatch(query) {
     const json = await getBatch(query);
     const imageInfos = await json.data;
     const paging = json.paging;
@@ -118,12 +126,11 @@ async function getBatch(query) {
     const apiUrl = formatAPIUrl('/batch', query);
     const res = await fetch(apiUrl);
     const json = await res.json();
-    const question = json.question;
+    // const question = json.question;
     const imageInfos = json.data;
     const paging = json.paging;
     const pool_is_empty = json.pool_is_empty;
 
-    $('h3.question').text(question.title);
     if (pool_is_empty) {
         poolIsEmpty = true;
         console.log("The image pool is empty.");
@@ -144,7 +151,7 @@ async function getBatch(query) {
                             <img class="avatar" src="${avatarUrl}" alt="" onerror="this.src='./static/avatar_template.jpg'">
                         </a>
                         <a href="https://www.zhihu.com/people/${authorUrlToken}" target="_blank" class="author" title="${authorName}">${authorName}</a>
-                        <a href="https://www.zhihu.com/question/${question.id}/answer/${answerId}" target="_blank" title="原回答" class="answer">A</a>
+                        <a href="https://www.zhihu.com/question/${query.id}/answer/${answerId}" target="_blank" title="原回答" class="answer">A</a>
                         <span class="voteup" title="赞同数"><i></i>${voteupCount}</span>
                     </div>
                 </div>
@@ -159,7 +166,7 @@ async function getBatch(query) {
         $waterFallImage.on('load', function () {
             $waterFallItem.animate({
                 'opacity': 1
-            }, 300);
+            }, 'fast');
             waterFall.appendItem($waterFallItem[0]);
             waterFall.organize();
             if (poolIsEmpty) {
@@ -328,11 +335,14 @@ function hideMemberWindow() {
 }
 function mouseInDom(selector, pos) {
     const $dom = $(selector);
-    const y1 = $dom.offset().top;
-    const y2 = y1 + $dom.height();
-    const x1 = $dom.offset().left;
-    const x2 = x1 + $dom.width();
-    return !(pos.x < x1 || pos.x > x2 || pos.y < y1 || pos.y > y2);
+    if ($dom.offset()) {
+        const y1 = $dom.offset().top;
+        const y2 = y1 + $dom.height();
+        const x1 = $dom.offset().left;
+        const x2 = x1 + $dom.width();
+        return !(pos.x < x1 || pos.x > x2 || pos.y < y1 || pos.y > y2);
+    }
+    return false;
 }
 
 // 动态创建的元素需要事件委托绑定事件

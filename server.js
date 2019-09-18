@@ -101,3 +101,12 @@ app.get('/member', async (request, response) => {
         response.json(errorJson);
     }
 })
+
+// 获取问题信息
+app.get('/question', async (request, response) => {
+    const { id } = request.query;
+    const questAPI = `https://www.zhihu.com/api/v4/questions/${id}`;
+    const res = await fetch(questAPI);
+    const questJson = await res.json();
+    response.json(questJson);
+})
