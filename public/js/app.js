@@ -88,14 +88,26 @@ const waterFall = new WaterFall({
     items: $(".waterfall-item"),
     cols: -1
 });
+let poolIsEmpty = false;
 let pagingIsEnd = false;
 let query = getQuery();
-query.limit = 1;
+query.limit = 20;
 query.offset = 0;
+getQuestion(query);
 getFirstBatch(query);
 
 // Functions
-async function getFirstBatch (query) {
+async function getQuestion(query) {
+    const apiUrl = formatAPIUrl('/question', query);
+    const res = await fetch(apiUrl);
+    const question = await res.json();
+    $('a.question').text(question.title)
+                   .attr('href', `https://www.zhihu.com/question/${question.id}`)
+                   .attr('target', '_blank') ;
+    $('span.answer-count').text(`${question.answerCount} 个回答`)
+}
+
+async function getFirstBatch(query) {
     const json = await getBatch(query);
     const imageInfos = await json.data;
     const paging = json.paging;
@@ -105,8 +117,9 @@ async function getFirstBatch (query) {
     maxHeight = (maxHeight == Infinity || maxHeight == -Infinity)? 0 : maxHeight;
     // console.log(waterFall.heightArr, minHeight, maxHeight);
 
-    if (minHeight < 500 && !pagingIsEnd) {
+    if (minHeight < 500 && !poolIsEmpty) {
         query.offset += query.limit;
+        console.log(query.offset);
         getFirstBatch(query);
     }
 }
@@ -116,15 +129,14 @@ async function getBatch(query) {
     const apiUrl = formatAPIUrl('/batch', query);
     const res = await fetch(apiUrl);
     const json = await res.json();
-    const question = json.question;
+    // const question = json.question;
     const imageInfos = json.data;
     const paging = json.paging;
+    const pool_is_empty = json.pool_is_empty;
 
-    if (paging.is_start) {
-        $('h3.question').text(question.title);
-    } else if (paging.is_end) {
-        pagingIsEnd = true;
-        console.log("This is the end");
+    if (pool_is_empty) {
+        poolIsEmpty = true;
+        console.log("The image pool is empty.");
         organizeFooter();
     }
     imageInfos.forEach((imageInfo, index) => {
@@ -142,25 +154,25 @@ async function getBatch(query) {
                             <img class="avatar" src="${avatarUrl}" alt="" onerror="this.src='./static/avatar_template.jpg'">
                         </a>
                         <a href="https://www.zhihu.com/people/${authorUrlToken}" target="_blank" class="author" title="${authorName}">${authorName}</a>
-                        <a href="https://www.zhihu.com/question/${question.id}/answer/${answerId}" target="_blank" title="原回答" class="answer">A</a>
+                        <a href="https://www.zhihu.com/question/${query.id}/answer/${answerId}" target="_blank" title="原回答" class="answer">A</a>
                         <span class="voteup" title="赞同数"><i></i>${voteupCount}</span>
                     </div>
                 </div>
         </div>`)
         const $waterFallImage = $waterFallItem.find('img.pic');
         $waterFallItem.css({
-            'visibility': 'hidden'
+            'opacity': 0
         });
 
         $('#waterfall-container').append($waterFallItem);
         $waterFallImage.attr('src', $waterFallImage.attr('data-src'));
         $waterFallImage.on('load', function () {
-            $waterFallItem.css({
-                'visibility': 'visible'
-            });
+            $waterFallItem.animate({
+                'opacity': 1
+            }, 'fast');
             waterFall.appendItem($waterFallItem[0]);
             waterFall.organize();
-            if (pagingIsEnd) {
+            if (poolIsEmpty) {
                 organizeFooter();
             }
         });
@@ -233,7 +245,7 @@ function sideToggle() {
 
 async function loadNewBatch() {
     // 加载新批次数据
-    if (pagingIsEnd) {
+    if (poolIsEmpty) {
         window.removeEventListener('scroll', loadNewBatch);
     }
     const pageHeight = document.body.scrollHeight;
@@ -257,7 +269,7 @@ async function showMemberWindow(e) {
     // show member window
     showLoading();
     $memberWindow.css({
-        'top': pageY - 150 + 'px',
+        'top': pageY - 180 + 'px',
         'left': pageX + 'px',
         // 'display': 'block',
         'visibility': 'visible',
@@ -326,14 +338,14 @@ function hideMemberWindow() {
 }
 function mouseInDom(selector, pos) {
     const $dom = $(selector);
-    if ($dom.length == 0) {
-        return false
+    if ($dom.offset()) {
+        const y1 = $dom.offset().top;
+        const y2 = y1 + $dom.height();
+        const x1 = $dom.offset().left;
+        const x2 = x1 + $dom.width();
+        return !(pos.x < x1 || pos.x > x2 || pos.y < y1 || pos.y > y2);
     }
-    const y1 = $dom.offset().top;
-    const y2 = y1 + $dom.height();
-    const x1 = $dom.offset().left;
-    const x2 = x1 + $dom.width();
-    return !(pos.x < x1 || pos.x > x2 || pos.y < y1 || pos.y > y2);
+    return false;
 }
 
 // 动态创建的元素需要事件委托绑定事件
@@ -388,7 +400,7 @@ $('.back-to-top').click(() => {
 })
 
 window.addEventListener('resize', function () {
-    if (pagingIsEnd) {
+    if (poolIsEmpty) {
         organizeFooter();
     }
 }, false);
