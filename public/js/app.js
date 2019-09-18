@@ -93,7 +93,9 @@ let pagingIsEnd = false;
 let query = getQuery();
 query.limit = 20;
 query.offset = 0;
-getQuestion(query);
+getQuestion(query).then(res => {
+    organizeMainPosition();
+});
 getFirstBatch(query);
 
 // Functions
@@ -204,6 +206,11 @@ function formatAPIUrl(route, query) {
         apiUrl += `${key}=${query[key]}&`
     }
     return apiUrl.slice(0, -1);
+}
+function organizeMainPosition() {
+    $('.main-container').css({
+        'margin-top': $('header').height() + 10 + 'px'
+    })
 }
 function organizeFooter() {
     const waterFallHeight = Math.max(...waterFall.heightArr);
@@ -400,6 +407,7 @@ $('.back-to-top').click(() => {
 })
 
 window.addEventListener('resize', function () {
+    organizeMainPosition();
     if (poolIsEmpty) {
         organizeFooter();
     }
