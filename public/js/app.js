@@ -90,6 +90,7 @@ const waterFall = new WaterFall({
 });
 let poolIsEmpty = false;
 let pagingIsEnd = false;
+let currentOffset = 0;
 let query = getQuery();
 query.limit = 20;
 query.offset = 0;
@@ -120,7 +121,8 @@ async function getFirstBatch(query) {
     // console.log(waterFall.heightArr, minHeight, maxHeight);
 
     if (minHeight < 500 && !poolIsEmpty) {
-        query.offset += query.limit;
+        // query.offset += query.limit;
+        query.offset = currentOffset + query.limit;
         console.log(query.offset);
         getFirstBatch(query);
     }
@@ -135,6 +137,8 @@ async function getBatch(query) {
     const imageInfos = json.data;
     const paging = json.paging;
     const pool_is_empty = json.pool_is_empty;
+    currentOffset = json.offset;
+    console.log('current offset', currentOffset);
 
     if (pool_is_empty) {
         poolIsEmpty = true;
@@ -259,7 +263,9 @@ async function loadNewBatch() {
     const scrollHeight = window.scrollY + 572;
     if (scrollHeight >= 0.8 * pageHeight && key) {
         key = false;
-        query.offset += query.limit;
+        // query.offset += query.limit;
+        // console.log('currentOffset', currentOffset);
+        query.offset = currentOffset + query.limit;
         const batchData = await getBatch(query);
         if (batchData) {
             key = true;
