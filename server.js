@@ -18,7 +18,7 @@ async function fillImagePool(quest, offset, limit) {
     let json = await quest.iterAnswers({offset, limit});
     let answers = json.data;
     let paging = json.paging;
-    while (imagePool.size < imagePool.minSize && !paging.is_end) {
+    while (imagePool.size < imagePool.minSize && (!paging.is_end || paging.is_start)) {
         answers.forEach(answer => {
             const imageUrls = quest.extractImages(answer);
             imageUrls.forEach(imageUrl => {
