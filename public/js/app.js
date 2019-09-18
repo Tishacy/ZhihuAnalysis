@@ -101,7 +101,10 @@ async function getQuestion(query) {
     const apiUrl = formatAPIUrl('/question', query);
     const res = await fetch(apiUrl);
     const question = await res.json();
-    $('h3.question').text(question.title);
+    $('a.question').text(question.title)
+                   .attr('href', `https://www.zhihu.com/question/${question.id}`)
+                   .attr('target', '_blank') ;
+    $('span.answer-count').text(`${question.answerCount} 个回答`)
 }
 
 async function getFirstBatch(query) {
@@ -266,7 +269,7 @@ async function showMemberWindow(e) {
     // show member window
     showLoading();
     $memberWindow.css({
-        'top': pageY - 150 + 'px',
+        'top': pageY - 180 + 'px',
         'left': pageX + 'px',
         // 'display': 'block',
         'visibility': 'visible',

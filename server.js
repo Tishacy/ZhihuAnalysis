@@ -1,7 +1,9 @@
 const express = require('express');
 const fetch = require('node-fetch');
+const jsdom = require('jsdom');
 const zhihu = require('./utils');
 require('dotenv').config();
+const { JSDOM } = jsdom;
 
 // Initialize the server
 const app = new express();
@@ -16,7 +18,6 @@ async function fillImagePool(quest, offset, limit) {
     let json = await quest.iterAnswers({offset, limit});
     let answers = json.data;
     let paging = json.paging;
-    let question = answers[0].question;
     while (imagePool.size < imagePool.minSize && !paging.is_end) {
         answers.forEach(answer => {
             const imageUrls = quest.extractImages(answer);
@@ -37,7 +38,6 @@ async function fillImagePool(quest, offset, limit) {
     
     console.log('paging is end?', paging.is_end)
     return {
-        'question': question,
         'answers': answers,
         'paging': paging
     };
@@ -62,7 +62,7 @@ app.get("/batch", async (request, response) => {
 
     // 填充图片池
     const fillJson = await fillImagePool(quest, offset, limit);
-    const { question, answers, paging } = fillJson;
+    const { answers, paging } = fillJson;
     
     // 从图片池中获取图片
     batch_size = (imagePool.size < batch_size)?  imagePool.size : batch_size;
@@ -73,7 +73,6 @@ app.get("/batch", async (request, response) => {
     console.log('Pool is empty?', imagePool.isEmpty(), imagePool.size);
 
     responseJson = {
-        question: question,
         data: imageInfos,
         paging: paging,
         pool_is_empty: imagePool.isEmpty(),
@@ -106,7 +105,12 @@ app.get('/member', async (request, response) => {
 app.get('/question', async (request, response) => {
     const { id } = request.query;
     const questAPI = `https://www.zhihu.com/api/v4/questions/${id}`;
-    const res = await fetch(questAPI);
-    const questJson = await res.json();
+    const questPage = `https://www.zhihu.com/question/${id}`;
+    const apiRes = await fetch(questAPI);
+    const questJson = await apiRes.json();
+    const htmlRes = await fetch(questPage);
+    const html = await htmlRes.text();
+    const dom = (new JSDOM(html)).window.document;
+    questJson.answerCount = dom.querySelector('meta[itemProp="answerCount"]').attributes['content'].textContent;
     response.json(questJson);
 })

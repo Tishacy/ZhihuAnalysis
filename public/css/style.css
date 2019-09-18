@@ -4,6 +4,9 @@
 	list-style: none;
     text-decoration: none;
 }
+html {
+    overflow-x: hidden;
+}
 html,
 body {
     width: 100%;
@@ -105,17 +108,25 @@ header.analysis-header {
 }
 header .question-container {
     width: 100%;
-    padding: 2rem 0;
+    padding: 1rem 0;
     background-color: #fff;
 }
 .question-container .question {
+    display: inline-block;
     padding: 0 2rem;
     font-size: 2.2rem;
     line-height: 3.2rem;
     color: #1a1a1a;
     font-weight: 600;
 }
-
+.question-container .answer-count {
+    display: block;
+    padding: 0 2rem;
+    font-size: 1.8rem;
+    line-height: 3.2rem;
+    color: #333;
+    font-weight: 600;
+}
 
 div.main-container {
     width: 100%;
