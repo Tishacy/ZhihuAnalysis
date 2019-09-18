@@ -326,6 +326,9 @@ function hideMemberWindow() {
 }
 function mouseInDom(selector, pos) {
     const $dom = $(selector);
+    if ($dom.length == 0) {
+        return false
+    }
     const y1 = $dom.offset().top;
     const y2 = y1 + $dom.height();
     const x1 = $dom.offset().left;
@@ -356,16 +359,16 @@ $(document).mousemove(function(e) {
     }
 })
 
-$('.main-container').delegate('.waterfall-item .image-wrapper img', 'click', function () {
+$('.main-container').delegate('.waterfall-item .image-wrapper>img', 'click', function () {
     const imageUrl = $(this).attr('src');
-    $('.image-mask-wrapper .image-wrapper img').attr('src', imageUrl);
+    $('.image-mask-wrapper .image-wrapper>img').attr('src', imageUrl);
     $('.image-mask-wrapper').stop().fadeIn(300);
 })
 $('.image-mask-wrapper .close-mask').click(function () {
     $('.image-mask-wrapper').stop().fadeOut(300);
     $('.image-mask-wrapper .image-wrapper img').attr('src', '').removeClass('full');
 })
-$('.image-mask-wrapper .image-wrapper img').click(function () {
+$('.image-mask-wrapper .image-wrapper>img').click(function () {
     $(this).toggleClass('full');
 })
 
