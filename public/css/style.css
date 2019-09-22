@@ -132,9 +132,53 @@ div.main-container {
     width: 100%;
     margin: 16rem auto 1rem;
     z-index: 1;
-    box-shadow: 0px 0px 2px rgba(0,0,0,0.2);
+    /* box-shadow: 0px 0px 2px rgba(0,0,0,0.2); */
     position: relative;
 }
+/* page loading animation */
+@keyframes move {
+    to { left: 50%; }
+} 
+@keyframes cover {
+    from, 49.9% { z-index: 1; }
+    50.1%, to { z-index: 0; }
+}  
+.flickr-spinner {
+    width: 3em;
+    height: 1.2em;
+    position: relative;
+    margin: 0rem auto;
+    z-index: 90;
+}  
+/* Using pseudo elements now */
+.flickr-spinner:before,
+.flickr-spinner:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 40%;
+    height: 100%;
+    border-radius: 50%;
+    
+    /* `alternate` seems to work good but the problem
+    is both the circles are stacked...
+    starting the animation backwards on the
+    first play for one of them will fix this. */
+    /* After each cycle, the stack order changes
+    in the original animation, so lets achieve that. */
+    /* and we're done ... */
+    animation:
+      move ease-in-out .7s infinite alternate,
+      cover 1.4s infinite reverse;
+}
+.flickr-spinner:before {
+    background: #0063dc; /* blue one */
+    animation-direction: alternate-reverse, normal; /* yay! */
+}  
+.flickr-spinner:after {
+    background: #ff0084; /* pink one */
+}
+
 .main-container .images-list#waterfall-container {
     width: 70%;
     margin: 0 auto;

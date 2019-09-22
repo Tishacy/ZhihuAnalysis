@@ -141,7 +141,8 @@ async function getBatch(query) {
     if (pool_is_empty) {
         poolIsEmpty = true;
         console.log("The image pool is empty.");
-        organizeFooter();
+        // organizeFooter();
+        displayEnd();
     }
     imageInfos.forEach((imageInfo, index) => {
         const imageUrl = imageInfo.imageUrl;
@@ -176,8 +177,9 @@ async function getBatch(query) {
             }, 'fast');
             waterFall.appendItem($waterFallItem[0]);
             waterFall.organize();
+            organizeFooter();
             if (poolIsEmpty) {
-                organizeFooter();
+                displayEnd();
             }
         });
         $waterFallImage.on('error', function () {
@@ -222,6 +224,9 @@ function organizeFooter() {
         'top': top + `px`,
         'display': 'block'
     })
+}
+function displayEnd() {
+    $('footer').html('<p>-- 没有更多了 --</p>');
 }
 
 
@@ -420,7 +425,8 @@ $('.back-to-top').click(() => {
 
 window.addEventListener('resize', function () {
     organizeMainPosition();
+    organizeFooter();
     if (poolIsEmpty) {
-        organizeFooter();
+        displayEnd();
     }
 }, false);
