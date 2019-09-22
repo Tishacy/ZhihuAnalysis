@@ -145,7 +145,9 @@ async function getBatch(query) {
         displayEnd();
     }
     imageInfos.forEach((imageInfo, index) => {
-        const imageUrl = imageInfo.imageUrl;
+        let imageUrl = imageInfo.imageUrl;
+        // Don't use the row image
+        imageUrl = transImageQuality(imageUrl, 'hd');
         const answerId = imageInfo.answerId;
         const avatarUrl = imageInfo.author.avatar_url;
         const authorName = imageInfo.author.name;
@@ -194,6 +196,17 @@ async function getBatch(query) {
         }
     })
     return json;
+}
+function transImageQuality(imageUrl, quality) {
+    let newImageUrl;
+    if (quality === 'hd') {
+        newImageUrl = imageUrl.split('_r').join('_hd');
+    } else if (quality === 'raw') {
+        newImageUrl = imageUrl.split('_hd').join('_r');
+    } else {
+        newImageUrl = imageUrl;
+    }
+    return newImageUrl;
 }
 function getQuery() {
     const params = document.location.search.slice(1).split('&');
@@ -386,7 +399,9 @@ $(document).mousemove(function(e) {
 })
 
 $('.main-container').delegate('.waterfall-item .image-wrapper>img', 'click', function () {
-    const imageUrl = $(this).attr('src');
+    let imageUrl = $(this).attr('src');
+    // Use the raw image
+    imageUrl = transImageQuality(imageUrl, 'raw');
     const image = $('.image-mask-wrapper .image-wrapper img');
     image.attr('src', imageUrl);
     if (image[0].width >= image[0].height) {
