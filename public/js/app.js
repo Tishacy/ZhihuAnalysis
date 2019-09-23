@@ -279,7 +279,7 @@ async function loadNewBatch() {
     const scrollHeight = window.scrollY + 572;
     if (scrollHeight >= 0.8 * pageHeight && key) {
         key = false;
-        query.offset = currentOffset + query.limit;
+        query.offset = currentOffset;
         const batchData = await getBatch(query);
         if (batchData) {
             key = true;
