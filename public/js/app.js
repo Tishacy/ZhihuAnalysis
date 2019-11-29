@@ -66,9 +66,9 @@ class WaterFall {
         } else if (this.colsType === 'auto') {
             // 根据屏幕宽度自动设置列数
             const viewWidth = window.innerWidth;
-            if (viewWidth <= 350) {
+            if (viewWidth <= 500) {
                 cols = 1
-            } else if (viewWidth > 350 && viewWidth <= 720) {
+            } else if (viewWidth > 500 && viewWidth <= 720) {
                 cols = 2
             } else if (viewWidth > 720 && viewWidth <= 1090) {
                 cols = 3

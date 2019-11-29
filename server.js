@@ -7,8 +7,8 @@ const { JSDOM } = jsdom;
 
 // Initialize the server
 const app = new express();
-const port = process.env.PORT || 3000;
-app.listen(port, '0.0.0.0', () => console.log('Listen at 3000'));
+const port = process.env.PORT || 80;
+app.listen(port, '0.0.0.0', () => console.log('Listen at 80'));
 app.use(express.static('public'));
 app.use(express.json());
 
