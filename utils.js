@@ -15,7 +15,7 @@ class Question {
         };
         this.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36',
-            'Cookie': '_zap=e6e5276a-da2d-41db-93dd-04e53d3e5718; d_c0="ABACjRUbEQyPTj7vaqafdwXR1SeMjCZwU28=|1500086380"; _ga=GA1.2.1884465342.1500086390; q_c1=0c18ac92434e461dbf10b1a96aa98139|1508241496000|1499843035000; __DAYU_PP=anaiVqQnmVEQuyFeqJ3Nffffffff8b7e007324df; _xsrf=CxDEygIODPlbzsiOxDTa60vN5JUhWGEa; __gads=ID=e191c789dec1bf4c:T=1540214568:S=ALNI_MbqMRDDJJ5nN5TvMh_QdvQckwQByw; z_c0=Mi4xUXdQd0FRQUFBQUFBRUFLTkZSc1JEQmNBQUFCaEFsVk5aYW5QWFFCMVQxYWppNHlRa2FtTmxtaDNNYVNub29SYVZR|1558338405|3b58741b6b2a88c4665e2c24615def459e556272; __utmv=51854390.100-1|2=registration_date=20150803=1^3=entry_date=20150803=1; tst=h; __utma=51854390.1884465342.1500086390.1559031016.1559405089.2; __utmz=51854390.1559405089.2.2.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/hot; q_c1=0c18ac92434e461dbf10b1a96aa98139|1560526127000|1499843035000; tgw_l7_route=4860b599c6644634a0abcd4d10d37251; tshl='
+            'Cookie': '_zap=2a6192f6-8259-4b94-bc43-1b06544ae81e; _xsrf=JXi8fslKSzS29KMXCgNq448wB2ixkife; d_c0="AJAtdzoSsA-PTudtdA736QeW_N9Apxhv_ds=|1562293976"; z_c0=Mi4xUXdQd0FRQUFBQUFBa0MxM09oS3dEeGNBQUFCaEFsVk5Dd1VNWGdCbEpndWFqZXo5aVFYcjgwOW8wNkRMWmJEU1hB|1562294027|20c5f01e0dc5836c598b8b3a43665bf57d3025f1; __utmv=51854390.100-1|2=registration_date=20150803=1^3=entry_date=20150803=1; __utma=51854390.1541920326.1562409633.1569834581.1571101309.7; __utmz=51854390.1571101309.7.5.utmcsr=zhihu.com|utmccn=(referral)|utmcmd=referral|utmcct=/hot; tshl=; q_c1=ce477c22ff54426e920e78cbd8890319|1573402118000|1562409630000; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1575011843,1575088690,1575098838,1575099349; tst=h; tgw_l7_route=73af20938a97f63d9b695ad561c4c10c; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1575105495'
         }
     }
 
@@ -59,7 +59,8 @@ class Question {
 }
 
 class ImagePool {
-    constructor() {
+    constructor(id) {
+        this.id = id,
         this.pool = [],
         this.minSize = 30,
         this.size = this.pool.length

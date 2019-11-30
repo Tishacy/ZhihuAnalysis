@@ -12,17 +12,17 @@ app.listen(port, '0.0.0.0', () => console.log('Listen at 3000'));
 app.use(express.static('public'));
 app.use(express.json());
 
-let imagePool;
+let imagePools = {};
 
-async function fillImagePool(quest, offset, limit) {
+async function fillImagePool(sessId, quest, offset, limit) {
     let json = await quest.iterAnswers({offset, limit});
     let answers = json.data;
     let paging = json.paging;
-    while (imagePool.size < imagePool.minSize && (!paging.is_end || paging.is_start)) {
+    while (imagePools[sessId].size < imagePools[sessId].minSize && (!paging.is_end || paging.is_start)) {
         answers.forEach(answer => {
             const imageUrls = quest.extractImages(answer);
             imageUrls.forEach(imageUrl => {
-                imagePool.inPool({
+                imagePools[sessId].inPool({
                     answerId: answer.id,
                     author: answer.author,
                     imageUrl: imageUrl,
@@ -47,9 +47,10 @@ async function fillImagePool(quest, offset, limit) {
 // 获取批次图片信息
 app.get("/batch", async (request, response) => {
     const query = request.query;
-    let { id, limit, offset, batch_size } = query;
+    let { id, limit, offset, batch_size, timestamp } = query;
     limit = parseInt(limit);
     offset = parseInt(offset);
+    let sessId = id + timestamp;
     
     const quest = new zhihu.Question(id);
     const imageInfos = [];
@@ -60,32 +61,41 @@ app.get("/batch", async (request, response) => {
     // 如果是获取问题的第一批数据，就创建一个新的图片池
     // Initialize the image pool
     if (offset == 0) {
-        imagePool = new zhihu.ImagePool;
+        imagePools[sessId] = new zhihu.ImagePool(sessId);
     }
-    console.log(`\n>>> Before filling image pool => offset: ${offset}, pool size: ${imagePool.size}`);
+    if (!imagePools[sessId]) {
+        return
+    }
+    console.log(`\n>>> [${sessId}] Before filling image pool => offset: ${offset}, pool size: ${imagePools[sessId].size}`);
 
     // 填充图片池
-    const fillJson = await fillImagePool(quest, offset, limit);
+    const fillJson = await fillImagePool(sessId, quest, offset, limit);
     let { answers, paging } = fillJson;
     offset = fillJson.offset;
-    console.log(`>>> After filling image pool => offset: ${offset}, pool size: ${imagePool.size}`);
+    console.log(`>>> [${sessId}] After filling image pool => offset: ${offset}, pool size: ${imagePools[sessId].size}`);
     
     // 从图片池中获取图片
-    batch_size = (imagePool.size < batch_size)?  imagePool.size : batch_size;
+    batch_size = (imagePools[sessId].size < batch_size)?  imagePools[sessId].size : batch_size;
     for (let i=0; i<batch_size;  i++) {
-        const imageInfo = imagePool.outPool();
+        const imageInfo = imagePools[sessId].outPool();
         imageInfos.push(imageInfo[0]);
     }
-    console.log(`>>> Get 15 images => offset: ${offset}, pool size: ${imagePool.size}`);
-    console.log('>>> Pool is empty?', imagePool.isEmpty());
+    console.log(`>>> [${sessId}] Get 15 images => offset: ${offset}, pool size: ${imagePools[sessId].size}`);
+    console.log(`>>> [${sessId}] Pool is empty?`, imagePools[sessId].isEmpty());
+    console.log(`>>> ImagePools ${Object.keys(imagePools)}`)
 
     responseJson = {
         data: imageInfos,
         paging: paging,
-        pool_is_empty: imagePool.isEmpty(),
+        pool_is_empty: imagePools[sessId].isEmpty(),
         offset: offset
     }
     response.json(responseJson);
+
+    // 回收某问题的imagePool
+    if (imagePools[sessId].isEmpty()) {
+        delete imagePools[sessId];
+    }
 })
 
 // 获取回答用户信息
