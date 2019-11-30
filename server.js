@@ -50,6 +50,7 @@ app.get("/batch", async (request, response) => {
     let { id, limit, offset, batch_size, timestamp } = query;
     limit = parseInt(limit);
     offset = parseInt(offset);
+    timestamp = timestamp || new Date().getTime();
     let sessId = id + timestamp;
     
     const quest = new zhihu.Question(id);
