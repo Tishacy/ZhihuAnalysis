@@ -59,7 +59,8 @@ class Question {
 }
 
 class ImagePool {
-    constructor() {
+    constructor(id) {
+        this.id = id,
         this.pool = [],
         this.minSize = 30,
         this.size = this.pool.length
