@@ -94,6 +94,7 @@ let currentOffset = 0;
 let query = getQuery();
 query.limit = 20;
 query.offset = 0;
+query.timestamp = query.timestamp || new Date().getTime();
 getQuestion(query).then(res => {
     organizeMainPosition();
 });
